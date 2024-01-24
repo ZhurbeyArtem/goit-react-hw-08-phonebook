@@ -1,11 +1,12 @@
 import { NLink, NavbarMain } from './Navbar.styled';
 import { useNavigate } from 'react-router-dom';
-import { getUser } from '../../redux/user/selectors';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchLogout } from '../../redux/user/api';
+import { useAuth } from 'hooks';
 
 function Navbar() {
-  const isAuth = useSelector(getUser);
+  const { isLoggedIn, user } = useAuth();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const logout = async () => {
@@ -16,9 +17,9 @@ function Navbar() {
   return (
     <>
       <NavbarMain>
-        {isAuth ? (
+        {isLoggedIn ? (
           <>
-            <p>{isAuth.user.email}</p>
+            <p>{user.email}</p>
             <NLink onClick={logout}>LogOut</NLink>
           </>
         ) : (

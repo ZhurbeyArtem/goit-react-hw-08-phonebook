@@ -19,18 +19,19 @@ const persistConfig = {
   key: 'root',
   storage,
   blacklist: ['contacts', 'filter'],
+  whitelist: ['token']
 };
+const persistedReducer = persistReducer(persistConfig, userReducer);
 
 const reducers = combineReducers({
   contacts: contactsReducer,
   filter: filterReducer,
-  user: userReducer
+  user: persistedReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: reducers,
   devTools: true,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

@@ -2,10 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { fetchCurrentUser, fetchLogin, fetchLogout, fetchRegister } from './api';
 
 const initialState = {
-  user: null,
+  user: {name:'', email: ''},
   isAuth: false,
   isLoading: false,
   error: null,
+  token: null,
 };
 
 export const contactsSlice = createSlice({
@@ -25,7 +26,7 @@ export const contactsSlice = createSlice({
     const setError = (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
-      state.user = null;
+      state.user = { name: '', email: '' };
     };
 
     builder
@@ -33,23 +34,31 @@ export const contactsSlice = createSlice({
       .addCase(fetchRegister.pending, setLoading)
       .addCase(fetchRegister.fulfilled, (state, { payload }) => {
         setLoaded(state);
-        console.log(payload);
-        state.user = payload;
+        state.user = payload.user;
+        state.token = payload.token;
+        state.isAuth = true;
       })
       .addCase(fetchRegister.rejected, setError)
+      
       //login
       .addCase(fetchLogin.pending, setLoading)
       .addCase(fetchLogin.fulfilled, (state, { payload }) => {
         setLoaded(state);
-        console.log(payload);
-        state.user = payload;
+        state.user = payload.user;
+        state.token = payload.token;
+        state.isAuth = true;
+
       })
       .addCase(fetchLogin.rejected, setError)
+      
       //logout
       .addCase(fetchLogout.pending, setLoading)
       .addCase(fetchLogout.fulfilled, (state, { payload }) => {
         setLoaded(state);
-        state.user = null;
+        state.user = {name: '', email:''};
+        state.token = null;
+        state.isAuth = false;
+
       })
       .addCase(fetchLogout.rejected, setError)
 
@@ -57,8 +66,9 @@ export const contactsSlice = createSlice({
       .addCase(fetchCurrentUser.pending, setLoading)
       .addCase(fetchCurrentUser.fulfilled, (state, { payload }) => {
         setLoaded(state);
-        console.log(payload);
         state.user = payload;
+        state.isAuth = true;
+
       })
       .addCase(fetchCurrentUser.rejected, setError);
   },
