@@ -23,10 +23,10 @@ export const App = () => {
     <b>Refreshing user...</b>
   ) : (
     <Routes>
-      <Route path="/goit-react-hw-08-phonebook" element={<Layout />}>
+      <Route path="/" element={<Layout />}>
         <Route
           path="/register"
-          element={<RestrictedRoute redirectTo="/login" component={<Auth />} />}
+          element={<RestrictedRoute redirectTo="/register" component={<Auth />} />}
         />
         <Route
           path="/login"
