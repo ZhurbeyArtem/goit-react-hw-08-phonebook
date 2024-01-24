@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchContacts, fetchAddContacts, fetchRemoveContact } from './api';
+import { fetchContacts, fetchAddContacts, fetchRemoveContact, fetchUpdateContact } from './api';
 
 const initialState = {
   contacts: [],
@@ -50,7 +50,17 @@ export const contactsSlice = createSlice({
           contact => contact.id !== payload.id
         );
       })
-      .addCase(fetchRemoveContact.rejected, setError);
+      .addCase(fetchRemoveContact.rejected, setError)
+
+      //update contact
+      .addCase(fetchUpdateContact.pending, setLoading)
+      .addCase(fetchUpdateContact.fulfilled, (state, { payload }) => {
+        setLoaded(state);
+        state.contacts = state.contacts.map(
+          contact => contact.id === payload.id ? payload : contact
+        );
+      })
+      .addCase(fetchUpdateContact.rejected, setError);
   },
 });
 

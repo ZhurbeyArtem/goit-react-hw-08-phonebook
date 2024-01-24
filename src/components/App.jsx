@@ -1,32 +1,30 @@
-import ContactsForm from './form/ContactsForm';
-import Filter from './filters/Filter';
-import ContactList from './contacts/ContactList';
-
-import s from 'index.module.css';
-import { useDispatch } from 'react-redux';
+import { privateRouter, publicRouter } from '../routes/consts';
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { fetchContacts } from '../redux/contacts/api';
-import { useEffect } from 'react';
-import { getError, getLoading } from '../redux/contacts/selectors';
+import { getUser } from '../redux/user/selectors';
+import Navbar from './navbar/Navbar';
 
 export const App = () => {
-  const dispatch = useDispatch();
-  const isLoading = useSelector(getLoading);
-  const error = useSelector(getError);
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
-
+  const isAuth = useSelector(getUser);
   return (
-    <div className={s.app}>
-      <h1>Phonebook</h1>
-      <ContactsForm />
-      
-      <h2>Contacts</h2>
-      <Filter />
-      {isLoading && <b>Loading tasks...</b>}
-      {error && <b>{error}</b>}
-      <ContactList />
-    </div>
+    <>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          {isAuth
+            ? privateRouter.map(({ path, Element }) => (
+                <Route key={path} path={path} element={<Element />} />
+              ))
+            : publicRouter.map(({ path, Element }) => (
+                <Route key={path} path={path} element={<Element />} />
+              ))}
+        </Routes>
+      </BrowserRouter>
+    </>
   );
+  // return <RouterProvider router={publicRouter} />;
 };

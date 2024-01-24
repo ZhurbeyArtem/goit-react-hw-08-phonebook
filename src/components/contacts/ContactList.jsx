@@ -1,28 +1,36 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { FixedSizeList } from 'react-window';
 
 import ContactsItem from './ContactsItem';
-import s from './style.module.css';
 import { getContacts } from '../../redux/contacts/selectors';
 import { getFilter } from '../../redux/filter/selectors';
 
 const ContactList = () => {
   const contacts = useSelector(getContacts);
   const filter = useSelector(getFilter);
-  const filteredContacts = () => {
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  };
-
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
   return (
-    <ul className={s.list}>
-      {filteredContacts().map(e => {
-        return (
-          <ContactsItem key={e.id} id={e.id} name={e.name} phone={e.phone} />
-        );
-      })}
-    </ul>
+    <FixedSizeList
+      height={400}
+      itemSize={70}
+      itemCount={filteredContacts.length}
+      overscanCount={3}
+    >
+      {({ index, style }) => (
+        <div>
+          <ContactsItem
+            key={filteredContacts[index].id}
+            id={filteredContacts[index].id}
+            name={filteredContacts[index].name}
+            number={filteredContacts[index].number}
+            style={style}
+          />
+        </div>
+      )}
+    </FixedSizeList>
   );
 };
 
