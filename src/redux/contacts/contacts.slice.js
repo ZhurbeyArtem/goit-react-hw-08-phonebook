@@ -1,5 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchContacts, fetchAddContacts, fetchRemoveContact, fetchUpdateContact } from './api';
+import {
+  fetchContacts,
+  fetchAddContacts,
+  fetchRemoveContact,
+  fetchUpdateContact,
+} from './api';
 
 const initialState = {
   contacts: [],
@@ -12,12 +17,12 @@ export const contactsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
-    const setLoading = (state, action) => {
+    const setLoading = (state) => {
       state.isLoading = true;
       state.error = null;
     };
 
-    const setLoaded = (state, action) => {
+    const setLoaded = (state) => {
       state.isLoading = false;
     };
 
@@ -35,6 +40,7 @@ export const contactsSlice = createSlice({
         state.contacts = payload;
       })
       .addCase(fetchContacts.rejected, setError)
+
       //add contact
       .addCase(fetchAddContacts.pending, setLoading)
       .addCase(fetchAddContacts.fulfilled, (state, { payload }) => {
@@ -42,6 +48,7 @@ export const contactsSlice = createSlice({
         state.contacts = [...state.contacts, payload];
       })
       .addCase(fetchAddContacts.rejected, setError)
+
       //remove contact
       .addCase(fetchRemoveContact.pending, setLoading)
       .addCase(fetchRemoveContact.fulfilled, (state, { payload }) => {
@@ -56,8 +63,8 @@ export const contactsSlice = createSlice({
       .addCase(fetchUpdateContact.pending, setLoading)
       .addCase(fetchUpdateContact.fulfilled, (state, { payload }) => {
         setLoaded(state);
-        state.contacts = state.contacts.map(
-          contact => contact.id === payload.id ? payload : contact
+        state.contacts = state.contacts.map(contact =>
+          contact.id === payload.id ? payload : contact
         );
       })
       .addCase(fetchUpdateContact.rejected, setError);
